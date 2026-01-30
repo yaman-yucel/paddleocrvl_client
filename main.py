@@ -114,6 +114,7 @@ async def process_file(file: UploadFile = File(...)) -> OCRResponse:
         raise HTTPException(status_code=503, detail="OCR pipeline not initialized")
 
     # Validate file extension
+    #! TODO: only png, jpg, jpeg pdf tested
     file_ext = Path(file.filename or "").suffix.lower()
     if file_ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
