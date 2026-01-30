@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     # Client
     ocr_api_url: str = "http://localhost:8080/ocr"
     input_dir: str = "./demo"
+    output_dir: str = "./output"
     client_timeout: float = 300.0
 
 
