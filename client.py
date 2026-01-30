@@ -4,6 +4,8 @@ from pathlib import Path
 
 import httpx
 
+from conf import settings
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -16,10 +18,13 @@ logger = logging.getLogger(__name__)
 
 
 async def process_pdfs(
-    input_dir: str = "./demo",
-    api_url: str = "http://localhost:8080/ocr",
+    input_dir: str | None = None,
+    api_url: str | None = None,
 ) -> None:
     """Send all PDFs in the input directory to the OCR API."""
+    input_dir = input_dir or settings.input_dir
+    api_url = api_url or settings.ocr_api_url
+
     input_path = Path(input_dir)
     pdf_files = list(input_path.glob("*.pdf"))
 
@@ -29,7 +34,7 @@ async def process_pdfs(
 
     logger.info("Found %d PDF files to process", len(pdf_files))
 
-    async with httpx.AsyncClient(timeout=300.0) as client:
+    async with httpx.AsyncClient(timeout=settings.client_timeout) as client:
         for pdf_file in pdf_files:
             logger.info("Processing: %s", pdf_file.name)
 

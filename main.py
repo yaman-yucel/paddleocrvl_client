@@ -7,6 +7,8 @@ from typing import Any
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from paddleocr import PaddleOCRVL
 
+from conf import settings
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -23,8 +25,8 @@ async def lifespan(app: FastAPI):
     logger.info("Initializing PaddleOCR pipeline...")
     pipeline = PaddleOCRVL(
         vl_rec_backend="vllm-server",
-        vl_rec_server_url="http://localhost:8118/v1",
-        vl_rec_api_model_name="PaddleOCR-VL-1.5-0.9B",
+        vl_rec_server_url=settings.vllm_server_url,
+        vl_rec_api_model_name=settings.vllm_model_name,
     )
     logger.info("PaddleOCR pipeline ready")
     yield
@@ -100,4 +102,4 @@ async def process_file(file: UploadFile = File(...)) -> dict[str, Any]:
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run(app, host=settings.host, port=settings.port)
